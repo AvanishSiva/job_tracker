@@ -13,6 +13,8 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.958.0",
     "@aws-sdk/lib-dynamodb": "^3.958.0",
+    "ajv": "^8.17.1",
+    "avi": "^0.0.1",
     "googleapis": "^169.0.0"
   }
 }

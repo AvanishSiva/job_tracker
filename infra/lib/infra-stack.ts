@@ -15,6 +15,7 @@ export class InfraStack extends cdk.Stack {
     const googleClientId = this.node.tryGetContext('googleClientId');
     const googleRedirectUri = this.node.tryGetContext('googleRedirectUri');
     const googleClientSecret = this.node.tryGetContext('googleClientSecret');
+    const geminiApiKey = this.node.tryGetContext('geminiApiKey');
 
     if (!googleClientId || !googleRedirectUri || !googleClientSecret) {
       throw new Error("Missing Google OAuth configuration in CDK context");
@@ -72,9 +73,9 @@ export class InfraStack extends cdk.Stack {
           USER_TOKENS_TABLE: userTokensTable.tableName,
           GOOGLE_CLIENT_SECRET: googleClientSecret,
           PROCESSED_EMAILS_TABLE: processedEmailsTable.tableName,
-
+          GEMINI_API_KEY: geminiApiKey
         },
-        timeout: cdk.Duration.seconds(20),
+        timeout: cdk.Duration.seconds(60),
         memorySize: 256,
       });
 
@@ -129,9 +130,13 @@ export class InfraStack extends cdk.Stack {
     userTokensTable.grantReadData(gmailPollerFn);
     processedEmailsTable.grantReadWriteData(gmailPollerFn);
 
+    gmailPollerFn.addEnvironment("JOBS_TABLE", jobsTable.tableName);
+    gmailPollerFn.addEnvironment("EVENTS_TABLE", eventsTable.tableName);
 
+    jobsTable.grantReadWriteData(gmailPollerFn);
+    eventsTable.grantReadWriteData(gmailPollerFn);
 
-
+    
 
   }
 }
