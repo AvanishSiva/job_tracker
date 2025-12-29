@@ -2,9 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { api, Job, JobStage } from '@/lib/api';
+import { JobTable } from './JobTable';
 import { JobCard } from './JobCard';
-import { Plus } from 'lucide-react';
+import { Plus, LayoutGrid, List } from 'lucide-react';
 import { AddJobModal } from './AddJobModal';
+import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 // Updated stages to include Assessment
 const STAGES: string[] = ['Applied', 'Assessment', 'Interviewing', 'Offer', 'Rejected', 'Accepted'];
@@ -14,6 +17,7 @@ export function JobBoard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [viewMode, setViewMode] = useState<'board' | 'table'>('board');
 
     useEffect(() => {
         loadJobs();
@@ -27,6 +31,7 @@ export function JobBoard() {
         } catch (err) {
             console.error(err);
             setError('Failed to load jobs. Is the backend running?');
+            toast.error('Failed to load jobs');
             // Fallback mock data matching new schema
             setJobs([
                 {
@@ -64,13 +69,39 @@ export function JobBoard() {
                     <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-50">Jobs Board</h1>
                     <p className="text-gray-500">Manage and track your job applications.</p>
                 </div>
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-500 hover:shadow-indigo-500/40"
-                >
-                    <Plus className="h-4 w-4" />
-                    Add Job
-                </button>
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center rounded-lg border border-gray-200 bg-white p-1 dark:border-gray-800 dark:bg-gray-900">
+                        <button
+                            onClick={() => setViewMode('board')}
+                            className={cn(
+                                "rounded px-2.5 py-1.5 text-sm font-medium transition-colors",
+                                viewMode === 'board'
+                                    ? "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-50"
+                                    : "text-gray-500 hover:text-gray-900 dark:hover:text-gray-300"
+                            )}
+                        >
+                            <LayoutGrid className="h-4 w-4" />
+                        </button>
+                        <button
+                            onClick={() => setViewMode('table')}
+                            className={cn(
+                                "rounded px-2.5 py-1.5 text-sm font-medium transition-colors",
+                                viewMode === 'table'
+                                    ? "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-50"
+                                    : "text-gray-500 hover:text-gray-900 dark:hover:text-gray-300"
+                            )}
+                        >
+                            <List className="h-4 w-4" />
+                        </button>
+                    </div>
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-500 hover:shadow-indigo-500/40"
+                    >
+                        <Plus className="h-4 w-4" />
+                        Add Job
+                    </button>
+                </div>
             </div>
 
             {loading ? (
@@ -78,6 +109,10 @@ export function JobBoard() {
                     {[1, 2, 3].map(i => (
                         <div key={i} className="h-32 animate-pulse rounded-xl bg-gray-100 dark:bg-gray-800" />
                     ))}
+                </div>
+            ) : viewMode === 'table' ? (
+                <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    <JobTable jobs={jobs} />
                 </div>
             ) : (
                 <div className="space-y-8">
@@ -110,7 +145,14 @@ export function JobBoard() {
                 </div>
             )}
 
-            <AddJobModal open={isModalOpen} onOpenChange={setIsModalOpen} onSuccess={loadJobs} />
+            <AddJobModal
+                open={isModalOpen}
+                onOpenChange={setIsModalOpen}
+                onSuccess={() => {
+                    loadJobs();
+                    toast.success('Job added successfully');
+                }}
+            />
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Briefcase } from 'lucide-react';
+import { NotificationCenter } from './NotificationCenter';
 
 export function Header() {
     return (
@@ -16,6 +17,7 @@ export function Header() {
                         Board
                     </Link>
                     <span className="h-4 w-px bg-gray-200 dark:bg-gray-800" />
+                    <NotificationCenter />
                     <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-500 ring-2 ring-white dark:ring-gray-950" />
                 </nav>
             </div>

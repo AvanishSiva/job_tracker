@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import { api, JobStage } from '@/lib/api';
+import { useNotification } from '@/lib/NotificationContext';
 
 interface AddJobModalProps {
     open: boolean;
@@ -12,6 +13,7 @@ interface AddJobModalProps {
 
 export function AddJobModal({ open, onOpenChange, onSuccess }: AddJobModalProps) {
     const [loading, setLoading] = useState(false);
+    const { addNotification } = useNotification();
     const [formData, setFormData] = useState({
         role: '',
         company: '',
@@ -27,10 +29,12 @@ export function AddJobModal({ open, onOpenChange, onSuccess }: AddJobModalProps)
         try {
             await api.createJob(formData);
             onSuccess();
+            addNotification('Job Created', `Successfully added ${formData.role} at ${formData.company}`, 'success');
             onOpenChange(false);
             setFormData({ role: '', company: '', location: '', stage: 'Applied' });
         } catch (error) {
             console.error(error);
+            addNotification('Error', 'Failed to create job', 'error');
             alert('Failed to create job');
         } finally {
             setLoading(false);
