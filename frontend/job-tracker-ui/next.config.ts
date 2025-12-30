@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/proxy/:path*',
-        destination: 'https://ftolhfdqyl.execute-api.eu-west-1.amazonaws.com/dev/:path*',
+        destination: 'https://<YOUR_API_ID>.execute-api.<REGION>.amazonaws.com/dev/:path*',
       },
     ];
   },
