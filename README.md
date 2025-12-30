@@ -7,6 +7,23 @@ A full-stack application to track job applications manually and automatically us
 -   **Table View**: Switch between Board and Table views for easy data management.
 -   **Notifications**: Real-time toast notifications and a persistent Notification Center for updates.
 -   **Manual Tracking**: Add jobs and events manually via a clean UI.
+## Gallery
+
+<div align="center">
+  <img src="assets/screenshots/board-view.png" alt="Job Board View" width="800"/>
+  <p><em>Kanban Board for visualizing application progress</em></p>
+</div>
+
+<div align="center">
+  <img src="assets/screenshots/table-view.png" alt="Job Table View" width="800"/>
+  <p><em>Table View for detailed data management</em></p>
+</div>
+
+<div align="center">
+  <img src="assets/screenshots/notifications.png" alt="Notification Center" width="400"/>
+  <p><em>Notification Center & Toasts</em></p>
+</div>
+
 ## Tech Stack
 -   **Frontend**: Next.js 14, Tailwind CSS, Lucide React, Sonner (Toasts).
 -   **Backend**: AWS Lambda (Node.js), Amazon DynamoDB, Amazon API Gateway.
